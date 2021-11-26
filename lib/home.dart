@@ -7,14 +7,50 @@ import 'fcm_page.dart';
 // 日時
 import 'package:intl/intl.dart';
 
-class Home extends StatelessWidget {
-  // 引数からユーザー情報を受け取れるようにする
-  const Home(this.token, {Key? key}) : super(key: key);
-  // ユーザー情報
-  final String token;
+class Home extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return HomeState();
+  }
+}
+
+class HomeState extends State<Home> with SingleTickerProviderStateMixin {
+  late Animation animation;
+  late AnimationController animationController;
+
+  HomeState();
+  _currentDate() {
+    return DateFormat("yyyy年 MM月 dd日").format(DateTime.now()) +
+        "（" +
+        DateFormat.EEEE('ja').format(DateTime.now())[0] +
+        "）";
+  }
+
+  _currentTime() {
+    return DateFormat("hh : mm : ss").format(DateTime.now());
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 1));
+    animationController.addListener(() {
+      if (animationController.isCompleted) {
+        animationController.reverse();
+      } else if (animationController.isDismissed) {
+        animationController.forward();
+      }
+      setState(() {});
+    });
+    animationController.forward();
+  }
 
   @override
   Widget build(BuildContext context) {
+    animation =
+        CurvedAnimation(parent: animationController, curve: Curves.easeInOut);
+    //animation = Tween(begin: -0.5, end: 0.5).animate(animation);
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -82,24 +118,49 @@ class Home extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SelectableText(token),
                   Container(
-                    height: 100,
-                    margin: const EdgeInsets.fromLTRB(50, 20, 50, 20),
-                    alignment: Alignment.center,
-                    child: Text(
-                      DateFormat('yyyy年mm月dd日 \n hh：mm').format(DateTime.now()),
-                    ),
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
                     decoration: BoxDecoration(
-                      color: Colors.lime,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          offset: Offset(1, 1),
-                          color: Colors.black12,
-                          blurRadius: 5,
+                        //border: Border.all(color: Colors.red),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            25.0,
+                          ),
                         ),
-                      ],
+                        color: Colors.lime,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            offset: const Offset(3.0, 3.0),
+                            blurRadius: 5.0,
+                            spreadRadius: 2.0,
+                          ),
+                        ]),
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                      height: 125,
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            _currentDate(),
+                            style: const TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 10),
+                            child: Text(
+                              _currentTime(),
+                              style: const TextStyle(
+                                fontSize: 48.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Image.network(
