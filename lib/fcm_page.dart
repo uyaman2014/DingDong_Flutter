@@ -15,7 +15,7 @@ class _FcmPageState extends State<FcmPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('トークン管理'),
+        title: const Text('トークン管理'),
         backgroundColor: Colors.amber,
       ),
       body: FCMNotificationListener(
@@ -31,12 +31,12 @@ class _FcmPageState extends State<FcmPage> {
                   final fcmToken = await FCMConfig.messaging.getToken();
                   setState(() {
                     token = fcmToken!;
-                    print(token);
+                    //print(token);
                   });
                 },
-                child: Text('トークンを取得'),
+                child: const Text('トークンを取得'),
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               SelectableText(token),
             ],
           ),
@@ -50,16 +50,16 @@ class _FcmPageState extends State<FcmPage> {
       context: context,
       builder: (_) {
         return AlertDialog(
-          title: Text("通知"),
-          content: Text("通知がきました"),
+          title: const Text("通知"),
+          content: const Text("通知がきました"),
           actions: <Widget>[
             // ボタン領域
             TextButton(
-              child: Text("Cancel"),
+              child: const Text("Cancel"),
               onPressed: () => Navigator.pop(context),
             ),
             TextButton(
-              child: Text("OK"),
+              child: const Text("OK"),
               onPressed: () => Navigator.pop(context),
             ),
           ],
