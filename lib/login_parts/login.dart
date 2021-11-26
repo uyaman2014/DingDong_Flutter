@@ -27,6 +27,12 @@ class _LoginPage extends State<Login> {
 
   // エラーメッセージを日本語化するためのクラス
   final auth_error = Authentication_error();
+  late String token = "";
+
+  Future<String> test() async {
+    String idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    return Future<String>.value(idToken);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +125,13 @@ class _LoginPage extends State<Login> {
                       // チャット画面に遷移＋ログイン画面を破棄
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return Home(user!);
+                          test().then((String result) {
+                            setState(() {
+                              token = result;
+                              print(token);
+                            });
+                          });
+                          return Home(token);
                         }),
                       );
                     } on FirebaseAuthException catch (e) {

@@ -9,13 +9,9 @@ import 'package:intl/intl.dart';
 
 class Home extends StatelessWidget {
   // 引数からユーザー情報を受け取れるようにする
-  const Home(this.user, {Key? key}) : super(key: key);
+  const Home(this.token, {Key? key}) : super(key: key);
   // ユーザー情報
-  final User user;
-
-  String test(User user) {
-    return user.uid;
-  }
+  final String token;
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +72,7 @@ class Home extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         // （2） 実際に表示するページ(ウィジェット)を指定する
-                        builder: (context) => FcmPage(user)));
+                        builder: (context) => FcmPage()));
               },
             ),
           ],
@@ -86,7 +82,7 @@ class Home extends StatelessWidget {
             SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SelectableText(test(user)),
+                  SelectableText(token),
                   Container(
                     height: 100,
                     margin: const EdgeInsets.fromLTRB(50, 20, 50, 20),

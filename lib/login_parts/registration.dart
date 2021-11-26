@@ -26,6 +26,13 @@ class _RegistrationState extends State<Registration> {
   // エラーメッセージを日本語化するためのクラス
   final auth_error = Authentication_error();
 
+  late String token = "";
+
+  Future<String> test() async {
+    String idToken = await FirebaseAuth.instance.currentUser!.getIdToken();
+    return Future<String>.value(idToken);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,7 +108,12 @@ class _RegistrationState extends State<Registration> {
                       User? user = result.user;
                       await Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) {
-                          return Home(user!);
+                          test().then((String result) {
+                            setState(() {
+                              token = result;
+                            });
+                          });
+                          return Home(token);
                         }),
                       );
                     } catch (e) {

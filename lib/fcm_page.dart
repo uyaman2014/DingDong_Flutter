@@ -1,12 +1,8 @@
 import 'package:fcm_config/fcm_config.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class FcmPage extends StatefulWidget {
-  // 引数からユーザー情報を受け取れるようにする
-  const FcmPage(this.user, {Key? key}) : super(key: key);
-  // ユーザー情報
-  final User user;
+  const FcmPage({Key? key}) : super(key: key);
 
   @override
   _FcmPageState createState() => _FcmPageState();
