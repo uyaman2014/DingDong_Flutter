@@ -113,7 +113,7 @@ class _RegistrationState extends State<Registration> {
                               token = result;
                             });
                           });
-                          return Home(token);
+                          return Home();
                         }),
                       );
                     } catch (e) {

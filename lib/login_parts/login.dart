@@ -131,7 +131,7 @@ class _LoginPage extends State<Login> {
                               print(token);
                             });
                           });
-                          return Home(token);
+                          return Home();
                         }),
                       );
                     } on FirebaseAuthException catch (e) {
