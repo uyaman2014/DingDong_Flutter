@@ -7,7 +7,34 @@ import 'fcm_page.dart';
 // 日時
 import 'package:intl/intl.dart';
 
+import 'dart:convert' as convert;
+import 'package:http/http.dart' as http;
+
+Future<void> _handleHttpGetImage(String ACCESS_TOKEN) async {
+  var url = Uri.https('localhost:8080', '/image', {'q': 'Flutter'});
+
+  var response = await http.get(url, headers: {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authrorization": ACCESS_TOKEN
+  });
+  if (response.statusCode == 200) {
+    var jsonResponse =
+        convert.jsonDecode(response.body) as Map<String, dynamic>;
+    var itemCount = jsonResponse['totalItems'];
+    print('Number of books about http: $itemCount.');
+  } else {
+    print('Request failed with status: ${response.statusCode}.');
+  }
+}
+
 class Home extends StatefulWidget {
+  // 以下を実装、受け渡し用のプロパティを定義
+  final String token;
+
+  // 以下を実装、コンストラクタで値を受領
+  Home({Key? key, required this.token}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return HomeState();
@@ -18,7 +45,6 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late Animation animation;
   late AnimationController animationController;
 
-  HomeState();
   _currentDate() {
     return DateFormat("yyyy年 MM月 dd日").format(DateTime.now()) +
         "（" +
@@ -177,6 +203,11 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
           ],
         ), // This trailing comma makes auto-formatting nicer for build methods.
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _handleHttpGetImage(widget.token),
+          tooltip: 'Increment',
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }
