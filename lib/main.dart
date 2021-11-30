@@ -36,7 +36,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.amber[50],
+        // scaffoldBackgroundColor: Colors.amber[50],
+        scaffoldBackgroundColor: Colors.amber,
       ),
       home: const Login(),
       // home: const DefaultTabController(
