@@ -1,4 +1,5 @@
 import 'dart:convert' as convert;
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,22 +9,60 @@ import 'package:intl/intl.dart';
 
 import 'fcm_page.dart';
 
-Future<void> _handleHttpGetImage(String ACCESS_TOKEN) async {
-  var url = Uri.https('localhost:8080', '/image', {'q': 'Flutter'});
+// jsonのパース先
+class ImageData {
+  final String date;
+  final String filename;
+  final String id;
+  final String user_id;
 
-  var response = await http.get(url, headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-    "Authrorization": ACCESS_TOKEN
-  });
+  // 宣言時にデータを入れる
+  ImageData(
+      {required this.date,
+      required this.filename,
+      required this.id,
+      required this.user_id});
+
+  factory ImageData.fromJson(Map<String, dynamic> json) {
+    return ImageData(
+      date: json["date"],
+      filename: json["filename"],
+      id: json["id"],
+      user_id: json["user_id"],
+    );
+  }
+}
+
+Future<List<ImageData>> _handleHttpGetImage(String ACCESS_TOKEN) async {
+  var url = Uri.parse('http://133.51.76.11:8080/image/test');
+
+  // var response = await http.get(url, headers: {
+  //   "Content-Type": "application/json",
+  //   "Accept": "application/json",
+  //   "Authrorization": ACCESS_TOKEN
+  // });
+  var response = await http.get(url);
+  List<ImageData> imagedatas = [];
   if (response.statusCode == 200) {
-    var jsonResponse =
-        convert.jsonDecode(response.body) as Map<String, dynamic>;
-    var itemCount = jsonResponse['totalItems'];
-    print('Number of books about http: $itemCount.');
+    // var jsonResponse =
+    //     convert.jsonDecode(response.body) as Map<String, dynamic>;
+    // var itemCount = jsonResponse['totalItems'];
+    // print('Number of books about http: $itemCount.');
+    var decodedJson = json.decode(response.body)["images"] as List;
+    // ImageData student = new Map<String, dynamic>.fromJson(decodedJson);
+
+    //Map<String, dynamic> decodedJson = json.decode(response.body)["images"];
+
+    imagedatas = decodedJson.map((i) => ImageData.fromJson(i)).toList();
+    imagedatas.forEach((ImageData item) {
+      print(item.filename);
+    });
+    //decodedJson.forEach(
+    //    (key, value) => imagedatas.add(ImageData.fromJson(decodedJson[key])));
   } else {
     print('Request failed with status: ${response.statusCode}.');
   }
+  return imagedatas;
 }
 
 class Home extends StatefulWidget {
@@ -42,7 +81,8 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late Animation animation;
   late AnimationController animationController;
-
+  late List<ImageData> imagedatas = []; // ここにサーバから取得した画像データが入ります
+  // imagedata[index].filenameでファイル名が取得できます
   _currentDate() {
     return DateFormat("yyyy年 MM月 dd日").format(DateTime.now()) +
         "（" +
@@ -52,6 +92,11 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   _currentTime() {
     return DateFormat("hh : mm : ss").format(DateTime.now());
+  }
+
+  _getimagedatas() async {
+    imagedatas = await _handleHttpGetImage(widget.token);
+    print(imagedatas.toString());
   }
 
   @override
@@ -68,6 +113,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
       setState(() {});
     });
     animationController.forward();
+    _getimagedatas();
   }
 
   @override
@@ -208,8 +254,9 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Image.network(
-                          'https://picsum.photos/250?image=9'), // ここにタブバー/一覧者の最新の画像が入ります
+                      Image.network('http://133.51.76.11:8080/download'),
+                      // Image.network('http://133.51.76.11:8080/download?path=' +
+                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります
                     ],
                   ),
                 ),
