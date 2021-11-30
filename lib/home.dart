@@ -1,14 +1,12 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert' as convert;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'fcm_page.dart';
-
+import 'package:http/http.dart' as http;
 // 日時
 import 'package:intl/intl.dart';
 
-import 'dart:convert' as convert;
-import 'package:http/http.dart' as http;
+import 'fcm_page.dart';
 
 Future<void> _handleHttpGetImage(String ACCESS_TOKEN) async {
   var url = Uri.https('localhost:8080', '/image', {'q': 'Flutter'});
@@ -74,6 +72,24 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    var grid = [
+      "IMG_9313.PNG",
+      "IMG_9419.JPG",
+      "IMG_9506.jpg",
+      "IMG_9507.JPG",
+      "IMG_9313.PNG",
+      "IMG_9419.JPG",
+      "IMG_9506.jpg",
+      "IMG_9507.JPG",
+      "IMG_9313.PNG",
+      "IMG_9419.JPG",
+      "IMG_9506.jpg",
+      "IMG_9507.JPG",
+      "IMG_9313.PNG",
+      "IMG_9419.JPG",
+      "IMG_9506.jpg",
+      "IMG_9507.JPG"
+    ]; //　タブバー/一覧/一覧させるテスト画像を入れてる
     animation =
         CurvedAnimation(parent: animationController, curve: Curves.easeInOut);
     //animation = Tween(begin: -0.5, end: 0.5).animate(animation);
@@ -99,7 +115,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
               ),
               Tab(
                 height: 100,
-                text: '分析',
+                text: '一覧',
                 icon: Icon(
                   Icons.assessment,
                   size: 60,
@@ -139,6 +155,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
           ],
         ),
+
         body: TabBarView(
           children: <Widget>[
             SingleChildScrollView(
@@ -190,17 +207,39 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   Image.network(
-                      'https://picsum.photos/250?image=9'), // ここに最新の画像が入ります
+                      'https://picsum.photos/250?image=9'), // ここにタブバー/一覧者の最新の画像が入ります
                 ],
               ),
             ),
-            SingleChildScrollView(
-              child: Column(
-                children: const <Widget>[
-                  Text('Hey'),
-                ],
-              ),
+            //SingleChildScrollView(
+            //　タブバー/一覧/一覧表示の処理
+            Column(
+              children: <Widget>[
+                Expanded(
+                  child: GridView.builder(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15.0), //全体padding
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, //2画面表示
+                        crossAxisSpacing: 10.0, //画像と画像の間のスペース(左右)
+                        mainAxisSpacing: 10.0, //画像と画像の間のスペース(上下)
+                        childAspectRatio: 0.8, // 高さ
+                      ),
+                      itemCount: grid
+                          .length, //gridView.builderに itemCountパラメータを入れてアイテム数を認識できるようにする
+                      itemBuilder: (BuildContext context, int index) {
+                        //itemBuilderは画像表示時に実行され無限にグリッド作れる
+                        //サーバーから返ってくる画像URLをリストに入れ, for文でリスト表示させる
+                        // if (index >= grid.length) {
+                        //   // grid.addAll(["IMG_9313.PNG", "IMG_9313.PNG"]);
+                        // }
+                        return _photoItem(context, grid[index]);
+                      }),
+                ),
+                Text('画面一覧表示だよ！！！！！！！！！スクロールは一旦消してるよ'),
+              ],
             ),
+            //),
           ],
         ), // This trailing comma makes auto-formatting nicer for build methods.
         floatingActionButton: FloatingActionButton(
@@ -210,5 +249,138 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+}
+
+Widget _photoItem(BuildContext context, String image) {
+  var assetsImage = "assets/images/" + image;
+  return Container(
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        new BoxShadow(
+          color: Colors.grey,
+          offset: new Offset(5.0, 5.0), //影の表示
+          blurRadius: 10.0, //ボケ感
+        )
+      ],
+    ),
+    child: Column(
+        //grid一塊をcolumnとする
+        crossAxisAlignment: CrossAxisAlignment.start, //左寄せにされる
+        children: <Widget>[
+          //ここのマテリアル部分を画面を遷移させる処理（＝画像をタップしたら拡大画面にいける）
+          Material(
+            //color: Colors.teal[100],
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyHomePageDetail(assetsImage)));
+              }, //tapした時のイベントを記載
+
+              child: ClipRRect(
+                child: AspectRatio(
+                  aspectRatio: 18.0 / 16.5, //写真のアスペクト比
+                  child: Image.asset(
+                    assetsImage,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+          ),
+
+          Container(
+            margin: EdgeInsets.all(10.10),
+            child: Text(
+              '来訪した日時を表示',
+            ),
+          ),
+        ]),
+  );
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("test"),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const <Widget>[
+            Text(
+              '',
+            ),
+            Text(
+              '',
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+//タブバー/一覧/画面遷移2枚目の処理
+@override
+class MyHomePageDetail extends StatefulWidget {
+  MyHomePageDetail(this._imageName);
+  final String _imageName;
+
+  @override
+  _MyHomePageDetailState createState() =>
+      new _MyHomePageDetailState(_imageName);
+}
+
+class _MyHomePageDetailState extends State<MyHomePageDetail> {
+  _MyHomePageDetailState(this._imageName);
+  final String _imageName;
+
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Material App"),
+        ),
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              Image.asset(_imageName),
+              Container(
+                child: ListTile(
+                  title: Text("来訪日時を表示"),
+                  subtitle: Text("何かコメント欄（いるかな？？）"),
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
