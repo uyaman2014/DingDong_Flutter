@@ -155,97 +155,102 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
             ),
           ],
         ),
-
-        body: TabBarView(
+        body: Stack(
           children: <Widget>[
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                    decoration: BoxDecoration(
-                        //border: Border.all(color: Colors.red),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(
-                            25.0,
-                          ),
-                        ),
-                        color: Colors.lime,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            offset: const Offset(3.0, 3.0),
-                            blurRadius: 5.0,
-                            spreadRadius: 2.0,
-                          ),
-                        ]),
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(30, 5, 30, 5),
-                      height: 125,
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            _currentDate(),
-                            style: const TextStyle(
-                                fontSize: 24.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              _currentTime(),
-                              style: const TextStyle(
-                                fontSize: 48.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+            Container(color: Colors.amber[50]), // 背景色の設定
+            TabBarView(
+              children: <Widget>[
+                SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                        decoration: BoxDecoration(
+                            //border: Border.all(color: Colors.red),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                25.0,
                               ),
                             ),
+                            color: Colors.lime,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                offset: const Offset(3.0, 3.0),
+                                blurRadius: 5.0,
+                                spreadRadius: 2.0,
+                              ),
+                            ]),
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                          height: 125,
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                _currentDate(),
+                                style: const TextStyle(
+                                    fontSize: 24.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: Text(
+                                  _currentTime(),
+                                  style: const TextStyle(
+                                    fontSize: 48.0,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Image.network(
+                          'https://picsum.photos/250?image=9'), // ここにタブバー/一覧者の最新の画像が入ります
+                    ],
                   ),
-                  Image.network(
-                      'https://picsum.photos/250?image=9'), // ここにタブバー/一覧者の最新の画像が入ります
-                ],
-              ),
-            ),
-            //SingleChildScrollView(
-            //　タブバー/一覧/一覧表示の処理
-            Column(
-              children: <Widget>[
-                Expanded(
-                  child: GridView.builder(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15.0), //全体padding
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, //2画面表示
-                        crossAxisSpacing: 10.0, //画像と画像の間のスペース(左右)
-                        mainAxisSpacing: 10.0, //画像と画像の間のスペース(上下)
-                        childAspectRatio: 0.8, // 高さ
-                      ),
-                      itemCount: grid
-                          .length, //gridView.builderに itemCountパラメータを入れてアイテム数を認識できるようにする
-                      itemBuilder: (BuildContext context, int index) {
-                        //itemBuilderは画像表示時に実行され無限にグリッド作れる
-                        //サーバーから返ってくる画像URLをリストに入れ, for文でリスト表示させる
-                        // if (index >= grid.length) {
-                        //   // grid.addAll(["IMG_9313.PNG", "IMG_9313.PNG"]);
-                        // }
-                        return _photoItem(context, grid[index]);
-                      }),
                 ),
-                Text('画面一覧表示だよ！！！！！！！！！スクロールは一旦消してるよ'),
+                //SingleChildScrollView(
+                //　タブバー/一覧/一覧表示の処理
+                Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: GridView.builder(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.0), //全体padding
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, //2画面表示
+                            crossAxisSpacing: 10.0, //画像と画像の間のスペース(左右)
+                            mainAxisSpacing: 10.0, //画像と画像の間のスペース(上下)
+                            childAspectRatio: 0.8, // 高さ
+                          ),
+                          itemCount: grid
+                              .length, //gridView.builderに itemCountパラメータを入れてアイテム数を認識できるようにする
+                          itemBuilder: (BuildContext context, int index) {
+                            //itemBuilderは画像表示時に実行され無限にグリッド作れる
+                            //サーバーから返ってくる画像URLをリストに入れ, for文でリスト表示させる
+                            // if (index >= grid.length) {
+                            //   // grid.addAll(["IMG_9313.PNG", "IMG_9313.PNG"]);
+                            // }
+                            return _photoItem(context, grid[index]);
+                          }),
+                    ),
+                    Text('画面一覧表示だよ！！！！！！！！！スクロールは一旦消してるよ'),
+                  ],
+                ),
+                //),
               ],
             ),
-            //),
-          ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _handleHttpGetImage(widget.token),
-          tooltip: 'Increment',
-          child: Icon(Icons.add),
+            // floatingActionButton: FloatingActionButton(
+            //   onPressed: () => _handleHttpGetImage(widget.token),
+            //   tooltip: 'Increment',
+            //   child: Icon(Icons.add),
+            // ),
+          ], // This trailing comma makes auto-formatting nicer for build methods.
         ),
       ),
     );
