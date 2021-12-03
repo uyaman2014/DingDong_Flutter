@@ -8,6 +8,9 @@ import 'package:intl/intl.dart';
 
 import 'fcm_page.dart';
 
+import "package:intl/intl.dart";
+import 'package:intl/date_symbol_data_local.dart';
+
 // jsonのパース先
 class ImageData {
   final String date; //日時取得後で変える！！！[あやか]
@@ -23,8 +26,13 @@ class ImageData {
       required this.user_id});
 
   factory ImageData.fromJson(Map<String, dynamic> json) {
+    var datelist = json["date"].split(" ");
+    var daylist = datelist[0].split("-");
+    var time = datelist[1].split(".");
+    String date =
+        daylist[0] + "年" + daylist[1] + "月" + daylist[2] + "日" + time[0];
     return ImageData(
-      date: json["date"],
+      date: date,
       filename: json["filename"],
       id: json["id"],
       user_id: json["user_id"],
@@ -33,7 +41,8 @@ class ImageData {
 }
 
 Future<List<ImageData>> _handleHttpGetImage(String ACCESS_TOKEN) async {
-  var url = Uri.parse('http://192.168.10.102:8080/image/test');
+  //var url = Uri.parse('http://192.168.10.102:8080/image/test'); // あやかさんのローカル
+  var url = Uri.parse('http://192.168.32.165:8080/image/test'); // たがいのローカル
 
   // var response = await http.get(url, headers: {
   //   "Content-Type": "application/json",
@@ -254,7 +263,9 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Image.network('http://192.168.10.102:8080/download'),
+                      // Image.network('http://192.168.10.102:8080/download'), // あやかさんのローカル
+                      Image.network(
+                          'http://192.168.32.165:8080/download'), // たがいのローカル
                       // Image.network('http://133.51.76.11:8080/download?path=' +
                       //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
                     ],
@@ -309,7 +320,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
 Widget _photoItem(BuildContext context, String image, String date) {
   var assetsImage = //"assets/images/"
-      "http://192.168.10.102:8080/download?path=" + image;
+      // "http://192.168.10.102:8080/download?path=" + image; // あやかさんのローカル
+      "http://192.168.32.165:8080/download?path=" + image; // たがいのローカル
   return Container(
     alignment: Alignment.center,
     decoration: BoxDecoration(
