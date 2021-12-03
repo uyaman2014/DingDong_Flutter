@@ -1,4 +1,3 @@
-import 'dart:convert' as convert;
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ import 'fcm_page.dart';
 
 // jsonのパース先
 class ImageData {
-  final String date;
+  final String date; //日時取得後で変える！！！[あやか]
   final String filename;
   final String id;
   final String user_id;
@@ -34,7 +33,7 @@ class ImageData {
 }
 
 Future<List<ImageData>> _handleHttpGetImage(String ACCESS_TOKEN) async {
-  var url = Uri.parse('http://133.51.76.11:8080/image/test');
+  var url = Uri.parse('http://192.168.10.102:8080/image/test');
 
   // var response = await http.get(url, headers: {
   //   "Content-Type": "application/json",
@@ -81,7 +80,8 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   late Animation animation;
   late AnimationController animationController;
-  late List<ImageData> imagedatas = []; // ここにサーバから取得した画像データが入ります
+  late List<ImageData> imagedatas = [];
+  // ここにサーバから取得した画像データが入ります
   // imagedata[index].filenameでファイル名が取得できます
   _currentDate() {
     return DateFormat("yyyy年 MM月 dd日").format(DateTime.now()) +
@@ -254,9 +254,9 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Image.network('http://133.51.76.11:8080/download'),
+                      Image.network('http://192.168.10.102:8080/download'),
                       // Image.network('http://133.51.76.11:8080/download?path=' +
-                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります
+                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
                     ],
                   ),
                 ),
@@ -275,7 +275,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             mainAxisSpacing: 10.0, //画像と画像の間のスペース(上下)
                             childAspectRatio: 0.8, // 高さ
                           ),
-                          itemCount: grid
+                          itemCount: imagedatas
                               .length, //gridView.builderに itemCountパラメータを入れてアイテム数を認識できるようにする
                           itemBuilder: (BuildContext context, int index) {
                             //itemBuilderは画像表示時に実行され無限にグリッド作れる
@@ -283,7 +283,10 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                             // if (index >= grid.length) {
                             //   // grid.addAll(["IMG_9313.PNG", "IMG_9313.PNG"]);
                             // }
-                            return _photoItem(context, grid[index]);
+                            return _photoItem(
+                                context,
+                                imagedatas[index].filename,
+                                imagedatas[index].date); //画像ファイル名、撮影日時を取得
                           }),
                     ),
                     Text('画面一覧表示だよ！！！！！！！！！スクロールは一旦消してるよ'),
@@ -304,8 +307,9 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
   }
 }
 
-Widget _photoItem(BuildContext context, String image) {
-  var assetsImage = "assets/images/" + image;
+Widget _photoItem(BuildContext context, String image, String date) {
+  var assetsImage = //"assets/images/"
+      "http://192.168.10.102:8080/download?path=" + image;
   return Container(
     alignment: Alignment.center,
     decoration: BoxDecoration(
@@ -335,12 +339,15 @@ Widget _photoItem(BuildContext context, String image) {
 
               child: ClipRRect(
                 child: AspectRatio(
-                  aspectRatio: 18.0 / 16.5, //写真のアスペクト比
-                  child: Image.asset(
-                    assetsImage,
-                    fit: BoxFit.cover,
-                  ),
-                ),
+                    aspectRatio: 18.0 / 16.5, //写真のアスペクト比
+                    child: Image.network(
+                      assetsImage,
+                      fit: BoxFit.cover,
+                    )
+                    // child: Image.asset(
+                    //   assetsImage,
+                    //   fit: BoxFit.cover,
+                    ),
               ),
             ),
           ),
@@ -348,7 +355,7 @@ Widget _photoItem(BuildContext context, String image) {
           Container(
             margin: EdgeInsets.all(10.10),
             child: Text(
-              '来訪した日時を表示',
+              date, //画像取得日時を表示
             ),
           ),
         ]),
@@ -424,7 +431,7 @@ class _MyHomePageDetailState extends State<MyHomePageDetail> {
         body: Center(
           child: Column(
             children: <Widget>[
-              Image.asset(_imageName),
+              Image.network(_imageName),
               Container(
                 child: ListTile(
                   title: Text("来訪日時を表示"),
