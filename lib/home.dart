@@ -174,8 +174,11 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
             children: [
               SvgPicture.asset(
                 'assets/Dingding-logo.svg',
-                fit: BoxFit.contain,
+
+                // fit: BoxFit.contain,
+                // height: 45,
                 height: 45,
+
                 color: Colors.white,
               ),
               Container(
@@ -289,7 +292,6 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                 imagedatas[index].date); //画像ファイル名、撮影日時を取得
                           }),
                     ),
-                    Text('画面一覧表示だよ！！！！！！！！！スクロールは一旦消してるよ'),
                   ],
                 ),
                 //),
@@ -323,6 +325,7 @@ Widget _photoItem(BuildContext context, String image, String date) {
       ],
     ),
     child: Column(
+
         //grid一塊をcolumnとする
         crossAxisAlignment: CrossAxisAlignment.start, //左寄せにされる
         children: <Widget>[
@@ -352,12 +355,23 @@ Widget _photoItem(BuildContext context, String image, String date) {
             ),
           ),
 
-          Container(
-            margin: EdgeInsets.all(10.10),
-            child: Text(
-              date, //画像取得日時を表示
-            ),
+          Column(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Expanded(child: Text('date'))
+                ], //時間取得する！！！！！！！
+              ),
+            ],
           ),
+
+          //         Container(
+          //           margin: EdgeInsets.all(10.10),
+          // Expanded(child: Text(date))
+          //           // child: Text(
+          //           //   date, //画像取得日時を表示
+          //           // ),
+          //         ),
         ]),
   );
 }
@@ -425,17 +439,20 @@ class _MyHomePageDetailState extends State<MyHomePageDetail> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: new AppBar(
-          title: new Text("Material App"),
+          title: new Text("画像の拡大表示"),
+          centerTitle: true,
+          backgroundColor: Colors.amber,
         ),
-        body: Center(
+        body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Image.network(_imageName),
               Container(
                 child: ListTile(
                   title: Text("来訪日時を表示"),
-                  subtitle: Text("何かコメント欄（いるかな？？）"),
+                  //subtitle: Text("もしコメント必要であればここに記入"),
                 ),
               )
             ],
