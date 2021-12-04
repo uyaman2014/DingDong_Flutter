@@ -270,7 +270,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       Image.network(
-                        'https://api.digital-future.jp/download',
+                        "https://api.digital-future.jp/download?path=" +
+                            imagedatas[0].filename,
                         fit: BoxFit.fill,
                         loadingBuilder: (BuildContext context, Widget child,
                             ImageChunkEvent? loadingProgress) {
