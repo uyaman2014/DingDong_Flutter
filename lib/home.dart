@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 // 日時
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import 'fcm_page.dart';
 
@@ -264,23 +263,29 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      // const Center(child: CircularProgressIndicator()),
-                      // Center(
-                      //   child: FadeInImage.memoryNetwork(
-                      //     placeholder: kTransparentImage,
-                      //     image: 'http://192.168.10.102:8080/download',
-                      //   ),
-
-                        Image.network(
-                          'http://192.168.10.102:8080/download',
-                          fit: BoxFit.fill,
-                        ),
-                        // ここここここあああああああああああああやかさんのローカル
-                        // Image.network(
-                        //     'http://192.168.32.165:8080/download'), // たがいのローカル
-                        // Image.network('http://133.51.76.11:8080/download?path=' +
-                        //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
-                      )
+                      Image.network(
+                        'https://api.digital-future.jp/download',
+                        fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
+                      ),
+                      // あやかさんのローカル
+                      // Image.network(
+                      //     'http://192.168.32.165:8080/download'), // たがいのローカル
+                      // Image.network('http://133.51.76.11:8080/download?path=' +
+                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
                     ],
                   ),
                 ),
