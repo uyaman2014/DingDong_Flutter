@@ -38,8 +38,9 @@ class ImageData {
 }
 
 Future<List<ImageData>> _handleHttpGetImage(String ACCESS_TOKEN) async {
-  var url = Uri.parse('http://192.168.10.102:8080/image/test'); // あやかさんのローカル
-  //var url = Uri.parse('http://192.168.32.165:8080/image/test'); // たがいのローカル
+  //var url = Uri.parse('http://192.168.10.102:8080/image/test'); // あやかさんのローカル
+  var url = Uri.parse('https://api.digital-future.jp/image/test'); // たがいのローカル
+
 
   // var response = await http.get(url, headers: {
   //   "Content-Type": "application/json",
@@ -264,9 +265,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       Image.network(
-                          'http://192.168.10.102:8080/download'), // あやかさんのローカル
-                      // Image.network(
-                      //     'http://192.168.32.165:8080/download'), // たがいのローカル
+                          'https://api.digital-future.jp/download'), // たがいのローカル
+
                       // Image.network('http://133.51.76.11:8080/download?path=' +
                       //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
                     ],
@@ -320,8 +320,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
 Widget _photoItem(BuildContext context, String image, String date) {
   var assetsImage = //"assets/images/"
-      "http://192.168.10.102:8080/download?path=" + image; // あやかさんのローカル
-  //"http://192.168.32.165:8080/download?path=" + image; // たがいのローカル
+      // "http://192.168.10.102:8080/download?path=" + image; // あやかさんのローカル
+      "https://api.digital-future.jp/download?path=" + image; // たがいのローカル
   return Container(
     alignment: Alignment.center,
     decoration: BoxDecoration(
