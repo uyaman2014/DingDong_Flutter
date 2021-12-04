@@ -269,20 +269,25 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-
-                      // const Center(child: CircularProgressIndicator()),
-                      // Center(
-                      //   child: FadeInImage.memoryNetwork(
-                      //     placeholder: kTransparentImage,
-                      //     image: 'http://192.168.10.102:8080/download',
-                      //   ),
-
                       Image.network(
-                        "https://api.digital-future.jp/download?path=" +
-                            imagedatas[0].filename,
+                        'https://api.digital-future.jp/download',
                         fit: BoxFit.fill,
+                        loadingBuilder: (BuildContext context, Widget child,
+                            ImageChunkEvent? loadingProgress) {
+                          if (loadingProgress == null) {
+                            return child;
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        },
                       ),
-                      // ここここここあああああああああああああやかさんのローカル
+                      // あやかさんのローカル
                       // Image.network(
                       //     'http://192.168.32.165:8080/download'), // たがいのローカル
                       // Image.network('http://133.51.76.11:8080/download?path=' +
