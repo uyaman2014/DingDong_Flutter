@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 // 日時
 import 'package:intl/intl.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'fcm_page.dart';
 
@@ -149,8 +150,7 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
+          centerTitle: true,
           backgroundColor: Colors.amber,
           bottom: const TabBar(
             indicatorColor: Colors.white,
@@ -182,8 +182,9 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 'assets/Dingding-logo.svg',
 
                 // fit: BoxFit.contain,
-                // height: 45,
+
                 height: 45,
+                width: 200,
 
                 color: Colors.white,
               ),
@@ -263,12 +264,23 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      Image.network(
-                          'http://192.168.10.102:8080/download'), // あやかさんのローカル
-                      // Image.network(
-                      //     'http://192.168.32.165:8080/download'), // たがいのローカル
-                      // Image.network('http://133.51.76.11:8080/download?path=' +
-                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
+                      const Center(child: CircularProgressIndicator()),
+                      Center(
+                        child: FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: 'http://192.168.10.102:8080/download',
+                        ),
+
+                        // Image.network(
+                        //   'http://192.168.10.102:8080/download',
+                        //   fit: BoxFit.fill,
+                        // ),
+                        // ここここここあああああああああああああやかさんのローカル
+                        // Image.network(
+                        //     'http://192.168.32.165:8080/download'), // たがいのローカル
+                        // Image.network('http://133.51.76.11:8080/download?path=' +
+                        //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
+                      )
                     ],
                   ),
                 ),
@@ -347,7 +359,8 @@ Widget _photoItem(BuildContext context, String image, String date) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => MyHomePageDetail(assetsImage)));
+                        builder: (context) =>
+                            MyHomePageDetail(assetsImage, date)));
               }, //tapした時のイベントを記載
 
               child: ClipRRect(
@@ -368,18 +381,17 @@ Widget _photoItem(BuildContext context, String image, String date) {
           Column(
             children: <Widget>[
               Row(
-                children: <Widget>[Expanded(child: Text(date))], //時間取得する！！！！！！！
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                      child: Text(
+                    date,
+                    textAlign: TextAlign.center,
+                  ))
+                ], //時間取得する！！！！！！！
               ),
             ],
           ),
-
-          //         Container(
-          //           margin: EdgeInsets.all(10.10),
-          // Expanded(child: Text(date))
-          //           // child: Text(
-          //           //   date, //画像取得日時を表示
-          //           // ),
-          //         ),
         ]),
   );
 }
@@ -432,17 +444,22 @@ class _MyHomePageState extends State<MyHomePage> {
 //タブバー/一覧/画面遷移2枚目の処理
 @override
 class MyHomePageDetail extends StatefulWidget {
-  MyHomePageDetail(this._imageName);
+  MyHomePageDetail(this._imageName, this.date);
   final String _imageName;
+  final String date;
 
   @override
   _MyHomePageDetailState createState() =>
-      new _MyHomePageDetailState(_imageName);
+      new _MyHomePageDetailState(_imageName, date);
 }
 
 class _MyHomePageDetailState extends State<MyHomePageDetail> {
-  _MyHomePageDetailState(this._imageName);
+  _MyHomePageDetailState(
+    this._imageName,
+    this.date,
+  );
   final String _imageName;
+  final String date;
 
   @override
   Widget build(BuildContext context) {
@@ -459,8 +476,8 @@ class _MyHomePageDetailState extends State<MyHomePageDetail> {
               Image.network(_imageName),
               Container(
                 child: ListTile(
-                  title: Text("来訪日時を表示"),
-                  //subtitle: Text("もしコメント必要であればここに記入"),
+                  title: Text("来訪日時"),
+                  subtitle: Text(date),
                 ),
               )
             ],
