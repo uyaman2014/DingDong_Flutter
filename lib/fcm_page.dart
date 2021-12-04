@@ -22,6 +22,7 @@ class _FcmPageState extends State<FcmPage> {
       ),
       body: FCMNotificationListener(
         onNotification: (RemoteMessage notification, _) async {
+          print("aaa");
           await dialog();
         },
         child: Center(

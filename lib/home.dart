@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
 // 日時
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import 'fcm_page.dart';
 
@@ -41,7 +40,6 @@ class ImageData {
 Future<List<ImageData>> _handleHttpGetImage(String ACCESS_TOKEN) async {
   //var url = Uri.parse('http://192.168.10.102:8080/image/test'); // あやかさんのローカル
   var url = Uri.parse('https://api.digital-future.jp/image/test'); // たがいのローカル
-
 
   // var response = await http.get(url, headers: {
   //   "Content-Type": "application/json",
@@ -124,6 +122,8 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
     _getimagedatas();
   }
 
+  var count = 0;
+
   @override
   Widget build(BuildContext context) {
     var grid = [
@@ -146,6 +146,10 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
     ]; //　タブバー/一覧/一覧させるテスト画像を入れてる
     animation =
         CurvedAnimation(parent: animationController, curve: Curves.easeInOut);
+    if (count > 250) {
+      _getimagedatas();
+      count = 0;
+    }
     //animation = Tween(begin: -0.5, end: 0.5).animate(animation);
     return DefaultTabController(
       length: 2,
@@ -273,16 +277,16 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       //     image: 'http://192.168.10.102:8080/download',
                       //   ),
 
-                        Image.network(
-                          'https://api.digital-future.jp/download',
-                          fit: BoxFit.fill,
-                        ),
-                        // ここここここあああああああああああああやかさんのローカル
-                        // Image.network(
-                        //     'http://192.168.32.165:8080/download'), // たがいのローカル
-                        // Image.network('http://133.51.76.11:8080/download?path=' +
-                        //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
-                      )
+                      Image.network(
+                        "https://api.digital-future.jp/download?path=" +
+                            imagedatas[0].filename,
+                        fit: BoxFit.fill,
+                      ),
+                      // ここここここあああああああああああああやかさんのローカル
+                      // Image.network(
+                      //     'http://192.168.32.165:8080/download'), // たがいのローカル
+                      // Image.network('http://133.51.76.11:8080/download?path=' +
+                      //     imagedatas[0].filename), // ここにタブバー/一覧者の最新の画像が入ります(のっちまんオレンジ彼女）
                     ],
                   ),
                 ),
