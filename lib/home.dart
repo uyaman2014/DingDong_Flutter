@@ -264,17 +264,17 @@ class HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                         ),
                       ),
-                      const Center(child: CircularProgressIndicator()),
-                      Center(
-                        child: FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: 'http://192.168.10.102:8080/download',
-                        ),
+                      // const Center(child: CircularProgressIndicator()),
+                      // Center(
+                      //   child: FadeInImage.memoryNetwork(
+                      //     placeholder: kTransparentImage,
+                      //     image: 'http://192.168.10.102:8080/download',
+                      //   ),
 
-                        // Image.network(
-                        //   'http://192.168.10.102:8080/download',
-                        //   fit: BoxFit.fill,
-                        // ),
+                        Image.network(
+                          'http://192.168.10.102:8080/download',
+                          fit: BoxFit.fill,
+                        ),
                         // ここここここあああああああああああああやかさんのローカル
                         // Image.network(
                         //     'http://192.168.32.165:8080/download'), // たがいのローカル
