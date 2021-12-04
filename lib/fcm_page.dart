@@ -1,6 +1,8 @@
 import 'package:fcm_config/fcm_config.dart';
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
+
 class FcmPage extends StatefulWidget {
   const FcmPage({Key? key}) : super(key: key);
 
@@ -31,7 +33,7 @@ class _FcmPageState extends State<FcmPage> {
                   final fcmToken = await FCMConfig.messaging.getToken();
                   setState(() {
                     token = fcmToken!;
-                    //print(token);
+                    print(token);
                   });
                 },
                 child: const Text('トークンを取得'),
